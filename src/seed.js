@@ -1,4 +1,4 @@
-export function createStore() {
+window.Seed = (function() {
   const users = [
     {
       firstName: "toto",
@@ -419,4 +419,4 @@ export function createStore() {
     fetchPatientExamRequest,
     fetchExam
   };
-};
+})();
