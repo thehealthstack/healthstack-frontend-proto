@@ -1,6 +1,12 @@
 import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home.vue";
+import ExamRequestListingView from "./views/ExamRequestListingView.vue";
+import examListingView from "./views/ExamListingView.vue";
+import CashierView from "./views/CashierView.vue";
+import ReceptionistView from "./views/ReceptionistView.vue";
+import PatientRegistrationComponent from "@/components/PatientRegistrationComponent.vue";
+import ResultRenderingComponent from "@/components/ResultRenderingComponent.vue";
 
 Vue.use(Router);
 
@@ -13,14 +19,33 @@ export default new Router({
       name: "home",
       component: Home
     },
+    { path: "/", component: Home },
     {
-      path: "/about",
-      name: "about",
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () =>
-        import(/* webpackChunkName: "about" */ "./views/About.vue")
+      path: "/:laboratoryname/biologist/:username",
+      component: ExamRequestListingView
+    },
+    {
+      path: "/:laboratoryname/labtech/:username",
+      component: ExamRequestListingView
+    },
+    {
+      path: "/:laboratoryname/labtech/:username/exams",
+      component: examListingView
+    },
+    { path: "/:laboratoryname/cashier/:username", component: CashierView },
+    {
+      path: "/:laboratoryname/receptionist/:username",
+      component: ReceptionistView,
+      children: [
+        {
+          path: "registration",
+          component: PatientRegistrationComponent
+        },
+        {
+          path: "results",
+          component: ResultRenderingComponent
+        }
+      ]
     }
   ]
 });
