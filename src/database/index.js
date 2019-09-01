@@ -1,9 +1,9 @@
 "use strict";
 
-import idb from "idb";
+import { openDB } from "idb";
 import seedData from "./seed.js";
 
-const db = idb.openDB("healthstackDB", 1, {
+const db = openDB("healthstackDB", 1, {
   upgrade(db) {
     const patientStore = db.createObjectStore("Patients", {
       keypath: "patientId",
