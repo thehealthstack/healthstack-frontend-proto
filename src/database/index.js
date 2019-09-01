@@ -55,15 +55,15 @@ export async function getPatientById(patientId) {
     }
 }
 
-export function createPatient(patient) {
+export async function createPatient(patient) {
     await db.add('Patients', patient);
 }
 
-export function editUserById(patientId, patient) {
+export async function editUserById(patientId, patient) {
     await db.put('Patients', patient, patientId);
 }
 
-export function deleteUserById(patientId) {
+export async function deleteUserById(patientId) {
     await db.delete('Patients', patientId)
 }
 
@@ -89,15 +89,15 @@ export async function getExamById(examId) {
     }
 }
 
-export function createExam(exam) {
+export async function createExam(exam) {
     await db.add('Exams', exam);
 }
 
-export function editExamById(examId, exam) {
+export async function editExamById(examId, exam) {
     await db.put('Exams', exam, examId);
 }
 
-export function deleteExamById(examId) {
+export async function deleteExamById(examId) {
     await db.delete('Exams', examId)
 }
 
@@ -152,15 +152,15 @@ export async function getCompleteExamReqeuestById(examRequestId) {
     }
 }
 
-export function createExamRequest(examRequest) {
+export async function createExamRequest(examRequest) {
     await db.add('ExamRequests', examRequest);
 }
 
-export function editExamRequestById(examRequestId, examRequest) {
+export async function editExamRequestById(examRequestId, examRequest) {
     await db.put('ExamRequests', examRequest, examRequestId);
 }
 
-export function deleteExamRequestById(examRequestId) {
+export async function deleteExamRequestById(examRequestId) {
     await db.delete('ExamRequests', examRequestId)
 }
 
@@ -186,15 +186,15 @@ export async function getUserById(userId) {
     }
 }
 
-export function createUser(user) {
+export async function createUser(user) {
     await db.add('Users', user);
 }
 
-export function editExamById(userId, user) {
+export async function editExamById(userId, user) {
     await db.put('Users', user, userId);
 }
 
-export function deleteUserById(userId) {
+export async function deleteUserById(userId) {
     await db.delete('Users', userId)
 }
 
