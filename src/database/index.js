@@ -5,11 +5,11 @@ import { async } from 'q';
 
 const db = idb.openDB('healthstackDB', 1, {
     upgrade(db) {
-        const patientStrore = db.createObjectStore('Patients', {
+        const patientStore = db.createObjectStore('Patients', {
             keypath: 'patientId',
             autoIncrement: true
         });
-        patientStrore.createIndex('email', 'email', {unique: true});
+        patientStore.createIndex('email', 'email', {unique: true});
 
         const examStore = db.createObjectStore('Exams', {
             keyPath: 'examId', 
