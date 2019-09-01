@@ -33,7 +33,7 @@ const dbPromise = openDB(dbName, dbVersion, {
     userStore.createIndex("email", "email", { unique: true });
     seedDB()
       .then(() => console.log("Seed successful"))
-      .catch(err => console.error("Error"));
+      .catch(err => console.error(err));
   }
 });
 
@@ -41,36 +41,43 @@ const dbPromise = openDB(dbName, dbVersion, {
  * Patients Functions
  */
 export async function getAllPatients() {
-  const db = await openDB(dbName, dbVersion);
   try {
-    return await db.getAll("Patients");
-  } catch (e) {
-    console.log("error");
+    return (await dbPromise).getAll("Patients");
+  } catch (err) {
+    console.error(err);
   }
 }
 
 export async function getPatientById(patientId) {
-  const db = await openDB(dbName, dbVersion);
   try {
-    return await db.get("Patients", patientId);
-  } catch (e) {
-    console.log("error");
+    return (await dbPromise).get("Patients", patientId);
+  } catch (err) {
+    console.error(err);
   }
 }
 
 export async function createPatient(patient) {
-  const db = await openDB(dbName, dbVersion);
-  await db.add("Patients", patient);
+  try {
+    return (await dbPromise).add("Patients", patient);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 export async function editPatientById(patientId, patient) {
-  const db = await openDB(dbName, dbVersion);
-  await db.put("Patients", patient, patientId);
+  try {
+    return (await dbPromise).put("Patients", patient, patientId);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 export async function deletePatientById(patientId) {
-  const db = await openDB(dbName, dbVersion);
-  await db.delete("Patients", patientId);
+  try {
+    return (await dbPromise).delete("Patients", patientId);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 /**
@@ -78,49 +85,43 @@ export async function deletePatientById(patientId) {
  */
 
 export async function getAllExams() {
-  const db = await openDB(dbName, dbVersion);
   try {
-    return await db.getAll("Exams");
-  } catch (e) {
-    console.log("error");
+    return (await dbPromise).getAll("Exams");
+  } catch (err) {
+    console.error(err);
   }
 }
 
 export async function getExamById(examId) {
-  const db = await openDB(dbName, dbVersion);
   try {
-    return await db.get("Exams", examId);
-  } catch (e) {
-    console.log("error");
+    return (await dbPromise).get("Exams", examId);
+  } catch (err) {
+    console.error(err);
   }
 }
 
-export function createExam(exam) {
-  //const db = await openDB(dbName, dbVersion);
-  //await db.add("Exams", exam);
-  dbPromise
-    .then(db => {
-      let tx = db.transaction("Exams", "readwrite");
-      let store = tx.objectStore("Exams");
-      store.add(exam);
-      return tx.complete;
-    })
-    .then(() => {
-      console.log("Added Exam");
-    })
-    .catch(err => {
-      console.log("Failed to add exam");
-    });
+export async function createExam(exam) {
+  try {
+    return (await dbPromise).add("Exams", exam);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 export async function editExamById(examId, exam) {
-  const db = await openDB(dbName, dbVersion);
-  await db.put("Exams", exam, examId);
+  try {
+    return (await dbPromise).put("Exams", exam, examId);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 export async function deleteExamById(examId) {
-  const db = await openDB(dbName, dbVersion);
-  await db.delete("Exams", examId);
+  try {
+    return (await dbPromise).delete("Exams", examId);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 /**
@@ -128,29 +129,30 @@ export async function deleteExamById(examId) {
  */
 
 export async function getAllExamRequests() {
-  const db = await openDB(dbName, dbVersion);
   try {
-    return await db.getAll("ExamRequests");
-  } catch (e) {
-    console.log("error");
+    return (await dbPromise).getAll("ExamRequests");
+  } catch (err) {
+    console.error(err);
   }
 }
 
 export async function getExamRequestById(examRequestId) {
-  const db = await openDB(dbName, dbVersion);
   try {
-    return await db.get("ExamRequests", examRequestId);
-  } catch (e) {
-    console.log("error");
+    return (await dbPromise).get("ExamRequests", examRequestId);
+  } catch (err) {
+    console.error(err);
   }
 }
 
 export async function getPatientExamRequestById(patientId) {
-  const db = await openDB(dbName, dbVersion);
   try {
-    return await db.getFromIndex("ExamRequests", "patientId", patientId);
-  } catch (e) {
-    console.log("error");
+    return (await dbPromise).getFromIndex(
+      "ExamRequests",
+      "patientId",
+      patientId
+    );
+  } catch (err) {
+    console.error(err);
   }
 }
 
@@ -159,47 +161,44 @@ export async function getPatientExamRequestById(patientId) {
  * Returns the original examRequest object in seed.js -> check seed.js line: 142
  */
 export async function getCompleteExamReqeuestById(examRequestId) {
-  const db = await openDB(dbName, dbVersion);
   try {
-    let examRequest = await db.get("ExamRequests", examRequestId);
-    examRequest.patient = await getPatientById(examRequest.patientId);
+    let examRequest = (await dbPromise).get("ExamRequests", examRequestId);
+    examRequest.patient = await await getPatientById(
+      (await examRequest).patientId
+    );
     examRequest.exams = examRequest.exams.map(async exam => {
-      let fetchedExam = await getExamById(exam.examId);
+      let fetchedExam = await await getExamById(exam.examId);
       fetchedExam.status = exam.status;
       return fetchedExam;
     });
     return examRequest;
-  } catch (e) {
-    console.log("error");
+  } catch (err) {
+    console.error(err);
   }
 }
 
 export async function createExamRequest(examRequest) {
-  //const db = await openDB(dbName, dbVersion);
-  //await db.add("ExamRequests", examRequest);
-  dbPromise
-    .then(db => {
-      let tx = db.transaction("ExamRequests", "readwrite");
-      let store = tx.objectStore("ExamRequests");
-      store.add(examRequest);
-      return tx.complete;
-    })
-    .then(() => {
-      console.log("Added ExamRequest");
-    })
-    .catch(err => {
-      console.log("Failed to add ExamRequest");
-    });
+  try {
+    return (await dbPromise).add("ExamRequests", examRequest);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 export async function editExamRequestById(examRequestId, examRequest) {
-  const db = await openDB(dbName, dbVersion);
-  await db.put("ExamRequests", examRequest, examRequestId);
+  try {
+    return (await dbPromise).put("ExamRequests", examRequest, examRequestId);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 export async function deleteExamRequestById(examRequestId) {
-  const db = await openDB(dbName, dbVersion);
-  await db.delete("ExamRequests", examRequestId);
+  try {
+    return (await dbPromise).delete("ExamRequests", examRequestId);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 /**
@@ -207,36 +206,43 @@ export async function deleteExamRequestById(examRequestId) {
  */
 
 export async function getAllUsers() {
-  const db = await openDB(dbName, dbVersion);
   try {
-    return await db.getAll("Users");
-  } catch (e) {
-    console.log("error");
+    return (await dbPromise).getAll("Users");
+  } catch (err) {
+    console.error(err);
   }
 }
 
 export async function getUserById(userId) {
-  const db = await openDB(dbName, dbVersion);
   try {
-    return await db.get("Users", userId);
-  } catch (e) {
-    console.log("error");
+    return (await dbPromise).get("Users", userId);
+  } catch (err) {
+    console.error(err);
   }
 }
 
 export async function createUser(user) {
-  const db = await openDB(dbName, dbVersion);
-  await db.add("Users", user);
+  try {
+    return (await dbPromise).add("Users", user);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 export async function editUserById(userId, user) {
-  const db = await openDB(dbName, dbVersion);
-  await db.put("Users", user, userId);
+  try {
+    return (await dbPromise).put("Users", user, userId);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 export async function deleteUserById(userId) {
-  const db = await openDB(dbName, dbVersion);
-  await db.delete("Users", userId);
+  try {
+    return (await dbPromise).delete("Users", userId);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 /**
