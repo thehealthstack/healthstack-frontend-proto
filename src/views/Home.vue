@@ -36,8 +36,8 @@
     <section class="hero is-medium">
       <div class="hero-body">
         <div class="container">
-          <h1 class="title has-text-white">
-            Modern Online and Offline Electronic Medical Record System for Africa
+          <h1 class="title has-text-white is-size-2">
+            Modern Electronic Medical Record System for Medical Diagnostic Laboratories in Africa
           </h1>
           <h2 class="subtitle has-text-white">
             Healthstack helps care providers to efficiently manage their workflow, <br>offer good customer experience and reduce cost
