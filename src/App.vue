@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import dataStore from "@/database/index.js";
+
 
 export default {
 }
