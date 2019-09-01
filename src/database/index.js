@@ -1,70 +1,68 @@
-'use strict';
+"use strict";
 
-import idb from 'idb';
-import { async } from 'q';
-import seedData from './seed.js'
-import { users, examRequests } from './seed.js';
+import idb from "idb";
+import { async } from "q";
+import seedData from "./seed.js";
+import { users, examRequests } from "./seed.js";
 
-const db = idb.openDB('healthstackDB', 1, {
-    upgrade(db) {
-        const patientStore = db.createObjectStore('Patients', {
-            keypath: 'patientId',
-            autoIncrement: true
-        });
-        patientStore.createIndex('email', 'email', {unique: true});
+const db = idb.openDB("healthstackDB", 1, {
+  upgrade(db) {
+    const patientStore = db.createObjectStore("Patients", {
+      keypath: "patientId",
+      autoIncrement: true
+    });
+    patientStore.createIndex("email", "email", { unique: true });
 
-        const examStore = db.createObjectStore('Exams', {
-            keyPath: 'examId', 
-            autoIncrement: true
-        });
-        examStore.createIndex('examName', 'examName', {unique: true});
+    const examStore = db.createObjectStore("Exams", {
+      keyPath: "examId",
+      autoIncrement: true
+    });
+    examStore.createIndex("examName", "examName", { unique: true });
 
-        const examRequestStore = db.createObjectStore('ExamRequests', {
-            keyPath: 'examRequestId', 
-            autoIncrement: true
-        });
-        examRequestStore.createIndex('patientId', 'patientId');
+    const examRequestStore = db.createObjectStore("ExamRequests", {
+      keyPath: "examRequestId",
+      autoIncrement: true
+    });
+    examRequestStore.createIndex("patientId", "patientId");
 
-        const userStore = db.createObjectStore('Users', {
-            keyPath: 'userId',
-            autoIncrement: true
-        });
-        userStore.createIndex('email', 'email', {unique: true});
-        seedDB().then(() => console.log("Seed successful")).catch(err => console.error(err));
-    }
+    const userStore = db.createObjectStore("Users", {
+      keyPath: "userId",
+      autoIncrement: true
+    });
+    userStore.createIndex("email", "email", { unique: true });
+    //seedDB().then(() => console.log("Seed successful")).catch(err => console.error(err));
+  }
 });
 
 /**
  * Patients Functions
  */
 export async function getAllPatients() {
-    try {
-        return await db.getAll('Patients');
-    }
-    catch (e) {
-        console.log("error")
-    }
+  try {
+    return await db.getAll("Patients");
+  } catch (e) {
+    console.log("error");
+  }
 }
 
 export async function getPatientById(patientId) {
-    try {
-        return await db.get('Patients', patientId);
-    }
-    catch (e) {
-        console.log("error")
-    }
+  try {
+    return await db.get("Patients", patientId);
+  } catch (e) {
+    console.log("error");
+  }
 }
 
 export async function createPatient(patient) {
-    await db.add('Patients', patient);
+  await db.add("Patients", patient);
 }
 
-export async function editUserById(patientId, patient) {
-    await db.put('Patients', patient, patientId);
+export async function editPatientById(patientId, patient) {
+  await db.put("Patients", patient, patientId);
 }
 
-export async function deleteUserById(patientId) {
-    await db.delete('Patients', patientId)
+export async function deletePatientById(patientId) {
+  await db.delete("Patients", patientId);
 }
 
 /**
@@ -72,33 +70,31 @@ export async function deleteUserById(patientId) {
  */
 
 export async function getAllExams() {
-    try {
-        return await db.getAll('Exams');
-    }
-    catch (e) {
-        console.log("error")
-    }
+  try {
+    return await db.getAll("Exams");
+  } catch (e) {
+    console.log("error");
+  }
 }
 
 export async function getExamById(examId) {
-    try {
-        return await db.get('Exams', examId);
-    }
-    catch (e) {
-        console.log("error")
-    }
+  try {
+    return await db.get("Exams", examId);
+  } catch (e) {
+    console.log("error");
+  }
 }
 
 export async function createExam(exam) {
-    await db.add('Exams', exam);
+  await db.add("Exams", exam);
 }
 
 export async function editExamById(examId, exam) {
-    await db.put('Exams', exam, examId);
+  await db.put("Exams", exam, examId);
 }
 
 export async function deleteExamById(examId) {
-    await db.delete('Exams', examId)
+  await db.delete("Exams", examId);
 }
 
 /**
@@ -106,30 +102,27 @@ export async function deleteExamById(examId) {
  */
 
 export async function getAllExamRequests() {
-    try {
-        return await db.getAll('ExamRequests');
-    }
-    catch (e) {
-        console.log("error")
-    }
+  try {
+    return await db.getAll("ExamRequests");
+  } catch (e) {
+    console.log("error");
+  }
 }
 
 export async function getExamRequestById(examRequestId) {
-    try {
-        return await db.get('ExamRequests', examRequestId);
-    }
-    catch (e) {
-        console.log("error")
-    }
+  try {
+    return await db.get("ExamRequests", examRequestId);
+  } catch (e) {
+    console.log("error");
+  }
 }
 
 export async function getPatientExamRequestById(patientId) {
-    try {
-        return await db.getFromIndex('ExamRequests', 'patientId', patientId);
-    }
-    catch (e) {
-        console.log("error")
-    }
+  try {
+    return await db.getFromIndex("ExamRequests", "patientId", patientId);
+  } catch (e) {
+    console.log("error");
+  }
 }
 
 /**
@@ -137,31 +130,30 @@ export async function getPatientExamRequestById(patientId) {
  * Returns the original examRequest object in seed.js -> check seed.js line: 142
  */
 export async function getCompleteExamReqeuestById(examRequestId) {
-    try {
-        let examRequest = await db.get('ExamRequests', examRequestId);
-        examRequest.patient = await getPatientById(examRequest.patientId);
-        examRequest.exams = examRequest.exams.map(exam => {
-            let fetchedExam = await getExamById(exam.examId);
-            fetchedExam.status = exam.status;
-            return fetchedExam;
-        });
-        return examRequest;
-    }
-    catch (e) {
-        console.log("error")
-    }
+  try {
+    let examRequest = await db.get("ExamRequests", examRequestId);
+    examRequest.patient = await getPatientById(examRequest.patientId);
+    examRequest.exams = examRequest.exams.map(async exam => {
+      let fetchedExam = await getExamById(exam.examId);
+      fetchedExam.status = exam.status;
+      return fetchedExam;
+    });
+    return examRequest;
+  } catch (e) {
+    console.log("error");
+  }
 }
 
 export async function createExamRequest(examRequest) {
-    await db.add('ExamRequests', examRequest);
+  await db.add("ExamRequests", examRequest);
 }
 
 export async function editExamRequestById(examRequestId, examRequest) {
-    await db.put('ExamRequests', examRequest, examRequestId);
+  await db.put("ExamRequests", examRequest, examRequestId);
 }
 
 export async function deleteExamRequestById(examRequestId) {
-    await db.delete('ExamRequests', examRequestId)
+  await db.delete("ExamRequests", examRequestId);
 }
 
 /**
@@ -169,33 +161,31 @@ export async function deleteExamRequestById(examRequestId) {
  */
 
 export async function getAllUsers() {
-    try {
-        return await db.getAll('Users');
-    }
-    catch (e) {
-        console.log("error")
-    }
+  try {
+    return await db.getAll("Users");
+  } catch (e) {
+    console.log("error");
+  }
 }
 
 export async function getUserById(userId) {
-    try {
-        return await db.get('Users', userId);
-    }
-    catch (e) {
-        console.log("error")
-    }
+  try {
+    return await db.get("Users", userId);
+  } catch (e) {
+    console.log("error");
+  }
 }
 
 export async function createUser(user) {
-    await db.add('Users', user);
+  await db.add("Users", user);
 }
 
-export async function editExamById(userId, user) {
-    await db.put('Users', user, userId);
+export async function editUserById(userId, user) {
+  await db.put("Users", user, userId);
 }
 
 export async function deleteUserById(userId) {
-    await db.delete('Users', userId)
+  await db.delete("Users", userId);
 }
 
 /**
@@ -203,8 +193,8 @@ export async function deleteUserById(userId) {
  */
 
 async function seedDB() {
-    seedData.patients.forEach(await createPatient);
-    seedData.examRequests.forEach(await createExamRequest);
-    seedData.exams.forEach(await createExam);
-    seedData.users.forEach(await createUser);
+  seedData.patients.forEach(await createPatient);
+  seedData.examRequests.forEach(await createExamRequest);
+  seedData.exams.forEach(await createExam);
+  seedData.users.forEach(await createUser);
 }
