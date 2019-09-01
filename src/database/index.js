@@ -1,9 +1,7 @@
 "use strict";
 
 import idb from "idb";
-import { async } from "q";
 import seedData from "./seed.js";
-import { users, examRequests } from "./seed.js";
 
 const db = idb.openDB("healthstackDB", 1, {
   upgrade(db) {
@@ -30,7 +28,9 @@ const db = idb.openDB("healthstackDB", 1, {
       autoIncrement: true
     });
     userStore.createIndex("email", "email", { unique: true });
-    //seedDB().then(() => console.log("Seed successful")).catch(err => console.error(err));
+    seedDB()
+      .then(() => console.log("Seed successful"))
+      .catch(err => console.error(err));
   }
 });
 
