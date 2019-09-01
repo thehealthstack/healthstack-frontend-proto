@@ -1,6 +1,7 @@
 'use strict';
 
 import idb from 'idb';
+import { async } from 'q';
 
 const db = idb.openDB('healthstackDB', 1, {
     upgrade(db) {
@@ -16,11 +17,11 @@ const db = idb.openDB('healthstackDB', 1, {
         });
         examStore.createIndex('examName', 'examName', {unique: true});
 
-        const examStore = db.createObjectStore('ExamRequests', {
+        const examRequestStore = db.createObjectStore('ExamRequests', {
             keyPath: 'examRequestId', 
             autoIncrement: true
         });
-        examStore.createIndex('patientId', 'patientId');
+        examRequestStore.createIndex('patientId', 'patientId');
 
         const userStore = db.createObjectStore('Users', {
             keyPath: 'userId',
@@ -34,11 +35,21 @@ const db = idb.openDB('healthstackDB', 1, {
  * Patients Functions
  */
 export async function getAllPatients() {
-    return await db.getAll('Patients');
+    try {
+        return await db.getAll('Patients');
+    }
+    catch (e) {
+        console.log("error")
+    }
 }
 
 export async function getPatientById(patientId) {
-    return await db.get('Patients', patientId);
+    try {
+        return await db.get('Patients', patientId);
+    }
+    catch (e) {
+        console.log("error")
+    }
 }
 
 export function createPatient(patient) {
@@ -58,11 +69,21 @@ export function deleteUserById(patientId) {
  */
 
 export async function getAllExams() {
-    return await db.getAll('Exams');
+    try {
+        return await db.getAll('Exams');
+    }
+    catch (e) {
+        console.log("error")
+    }
 }
 
 export async function getExamById(examId) {
-    return await db.get('Exams', examId);
+    try {
+        return await db.get('Exams', examId);
+    }
+    catch (e) {
+        console.log("error")
+    }
 }
 
 export function createExam(exam) {
@@ -82,11 +103,50 @@ export function deleteExamById(examId) {
  */
 
 export async function getAllExamRequests() {
-    return await db.getAll('ExamRequests');
+    try {
+        return await db.getAll('ExamRequests');
+    }
+    catch (e) {
+        console.log("error")
+    }
 }
 
 export async function getExamRequestById(examRequestId) {
-    return await db.get('ExamRequests', examRequestId);
+    try {
+        return await db.get('ExamRequests', examRequestId);
+    }
+    catch (e) {
+        console.log("error")
+    }
+}
+
+export async function getPatientExamRequestById(patientId) {
+    try {
+        return await db.getFromIndex('ExamRequests', 'patientId', patientId);
+    }
+    catch (e) {
+        console.log("error")
+    }
+}
+
+/**
+ * message to Vlad
+ * Returns the original examRequest object in seed.js -> check seed.js line: 142
+ */
+export async function getCompleteExamReqeuestById(examRequestId) {
+    try {
+        let examRequest = await db.get('ExamRequests', examRequestId);
+        examRequest.patient = await getPatientById(examRequest.patientId);
+        examRequest.exams = examRequest.exams.map(exam => {
+            let fetchedExam = await getExamById(exam.examId);
+            fetchedExam.status = exam.status;
+            return fetchedExam;
+        });
+        return examRequest;
+    }
+    catch (e) {
+        console.log("error")
+    }
 }
 
 export function createExamRequest(examRequest) {
