@@ -3,9 +3,11 @@
 import {openDB} from "idb";
 import seedData from "./seed.js";
 
-let db;
+const dbName = 'HealthStack';
+const dbVersion = 1;
+
 (async function() {
-    db = await openDB("healthstackDB", 1, {
+    await openDB(dbName, dbVersion, {
         upgrade(db) {
           const patientStore = db.createObjectStore("Patients", {
             keypath: "patientId",
@@ -41,6 +43,7 @@ let db;
  * Patients Functions
  */
 export async function getAllPatients() {
+	const db = await openDB(dbName, dbVersion);
   try {
     return await db.getAll("Patients");
   } catch (e) {
@@ -49,6 +52,7 @@ export async function getAllPatients() {
 }
 
 export async function getPatientById(patientId) {
+	const db = await openDB(dbName, dbVersion);
   try {
     return await db.get("Patients", patientId);
   } catch (e) {
@@ -57,15 +61,17 @@ export async function getPatientById(patientId) {
 }
 
 export async function createPatient(patient) {
-	const dbi = await openDB("healthstackDB", 1);
-  await dbi.add("Patients", patient);
+	const db = await openDB(dbName, dbVersion);
+  await db.add("Patients", patient);
 }
 
 export async function editPatientById(patientId, patient) {
+	const db = await openDB(dbName, dbVersion);
   await db.put("Patients", patient, patientId);
 }
 
 export async function deletePatientById(patientId) {
+	const db = await openDB(dbName, dbVersion);
   await db.delete("Patients", patientId);
 }
 
@@ -74,6 +80,7 @@ export async function deletePatientById(patientId) {
  */
 
 export async function getAllExams() {
+	const db = await openDB(dbName, dbVersion);
   try {
     return await db.getAll("Exams");
   } catch (e) {
@@ -82,6 +89,7 @@ export async function getAllExams() {
 }
 
 export async function getExamById(examId) {
+	const db = await openDB(dbName, dbVersion);
   try {
     return await db.get("Exams", examId);
   } catch (e) {
@@ -90,14 +98,17 @@ export async function getExamById(examId) {
 }
 
 export async function createExam(exam) {
+	const db = await openDB(dbName, dbVersion);
   await db.add("Exams", exam);
 }
 
 export async function editExamById(examId, exam) {
+	const db = await openDB(dbName, dbVersion);
   await db.put("Exams", exam, examId);
 }
 
 export async function deleteExamById(examId) {
+	const db = await openDB(dbName, dbVersion);
   await db.delete("Exams", examId);
 }
 
@@ -106,6 +117,7 @@ export async function deleteExamById(examId) {
  */
 
 export async function getAllExamRequests() {
+	const db = await openDB(dbName, dbVersion);
   try {
     return await db.getAll("ExamRequests");
   } catch (e) {
@@ -114,6 +126,7 @@ export async function getAllExamRequests() {
 }
 
 export async function getExamRequestById(examRequestId) {
+	const db = await openDB(dbName, dbVersion);
   try {
     return await db.get("ExamRequests", examRequestId);
   } catch (e) {
@@ -122,6 +135,7 @@ export async function getExamRequestById(examRequestId) {
 }
 
 export async function getPatientExamRequestById(patientId) {
+	const db = await openDB(dbName, dbVersion);
   try {
     return await db.getFromIndex("ExamRequests", "patientId", patientId);
   } catch (e) {
@@ -134,6 +148,7 @@ export async function getPatientExamRequestById(patientId) {
  * Returns the original examRequest object in seed.js -> check seed.js line: 142
  */
 export async function getCompleteExamReqeuestById(examRequestId) {
+	const db = await openDB(dbName, dbVersion);
   try {
     let examRequest = await db.get("ExamRequests", examRequestId);
     examRequest.patient = await getPatientById(examRequest.patientId);
@@ -149,14 +164,17 @@ export async function getCompleteExamReqeuestById(examRequestId) {
 }
 
 export async function createExamRequest(examRequest) {
+	const db = await openDB(dbName, dbVersion);
   await db.add("ExamRequests", examRequest);
 }
 
 export async function editExamRequestById(examRequestId, examRequest) {
+	const db = await openDB(dbName, dbVersion);
   await db.put("ExamRequests", examRequest, examRequestId);
 }
 
 export async function deleteExamRequestById(examRequestId) {
+	const db = await openDB(dbName, dbVersion);
   await db.delete("ExamRequests", examRequestId);
 }
 
@@ -165,6 +183,7 @@ export async function deleteExamRequestById(examRequestId) {
  */
 
 export async function getAllUsers() {
+	const db = await openDB(dbName, dbVersion);
   try {
     return await db.getAll("Users");
   } catch (e) {
@@ -173,6 +192,7 @@ export async function getAllUsers() {
 }
 
 export async function getUserById(userId) {
+	const db = await openDB(dbName, dbVersion);
   try {
     return await db.get("Users", userId);
   } catch (e) {
@@ -181,14 +201,17 @@ export async function getUserById(userId) {
 }
 
 export async function createUser(user) {
+	const db = await openDB(dbName, dbVersion);
   await db.add("Users", user);
 }
 
 export async function editUserById(userId, user) {
+	const db = await openDB(dbName, dbVersion);
   await db.put("Users", user, userId);
 }
 
 export async function deleteUserById(userId) {
+	const db = await openDB(dbName, dbVersion);
   await db.delete("Users", userId);
 }
 
