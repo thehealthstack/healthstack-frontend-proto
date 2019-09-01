@@ -2,6 +2,8 @@
 
 import idb from 'idb';
 import { async } from 'q';
+import './seed.js'
+import { users, examRequests } from './seed.js';
 
 const db = idb.openDB('healthstackDB', 1, {
     upgrade(db) {
@@ -28,6 +30,7 @@ const db = idb.openDB('healthstackDB', 1, {
             autoIncrement: true
         });
         userStore.createIndex('email', 'email', {unique: true});
+        seedDB().then(() => console.log("Seed successful")).catch(err => console.error(err));
     }
 });
 
@@ -159,4 +162,49 @@ export function editExamRequestById(examRequestId, examRequest) {
 
 export function deleteExamRequestById(examRequestId) {
     await db.delete('ExamRequests', examRequestId)
+}
+
+/**
+ * Users Functions
+ */
+
+export async function getAllUsers() {
+    try {
+        return await db.getAll('Users');
+    }
+    catch (e) {
+        console.log("error")
+    }
+}
+
+export async function getUserById(userId) {
+    try {
+        return await db.get('Users', userId);
+    }
+    catch (e) {
+        console.log("error")
+    }
+}
+
+export function createUser(user) {
+    await db.add('Users', user);
+}
+
+export function editExamById(userId, user) {
+    await db.put('Users', user, userId);
+}
+
+export function deleteUserById(userId) {
+    await db.delete('Users', userId)
+}
+
+/**
+ * Seed the database
+ */
+
+async function seedDB() {
+    patients.forEach(await createPatient);
+    examRequests.forEach(await createExamRequest);
+    exams.forEach(await createExam);
+    users.forEach(await createUser);
 }
