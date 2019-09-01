@@ -162,15 +162,20 @@ export async function getPatientExamRequestById(patientId) {
  */
 export async function getCompleteExamReqeuestById(examRequestId) {
   try {
-    let examRequest = (await dbPromise).get("ExamRequests", examRequestId);
+    let examRequest = await (await dbPromise).get(
+      "ExamRequests",
+      examRequestId
+    );
     examRequest.patient = await await getPatientById(
       (await examRequest).patientId
     );
-    examRequest.exams = examRequest.exams.map(async exam => {
-      let fetchedExam = await await getExamById(exam.examId);
-      fetchedExam.status = exam.status;
-      return fetchedExam;
-    });
+    examRequest.exams = await Promise.all(
+      examRequest.exams.map(async exam => {
+        let fetchedExam = await await getExamById(exam.examId);
+        fetchedExam.status = exam.status;
+        return fetchedExam;
+      })
+    );
     return examRequest;
   } catch (err) {
     console.error(err);

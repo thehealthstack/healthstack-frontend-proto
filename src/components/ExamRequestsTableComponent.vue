@@ -17,13 +17,24 @@
 
 <script>
 import examRequestsTableRowComponent from "@/components/ExamRequestsTableRowComponent.vue";
+import { getAllExamRequests, getCompleteExamReqeuestById } from "@/database/index.js";
 
 export default {
     data(){
         return {
-            examRequests: Seed.examRequests,
-            session: Seed.session
+            examRequests: [],
+            session: {}
         }
+    },
+    async created(){
+        let availExamRequests = await getAllExamRequests();
+        let examRequests = [];
+        availExamRequests.map(async request => {
+            let examRequest = await await getCompleteExamReqeuestById(request.examRequestId);
+            examRequests.push(examRequest);
+        })
+        console.log(examRequests);
+        this.examRequests = examRequests;
     },
     components: {
         "examrequesttablerow-component": examRequestsTableRowComponent,
