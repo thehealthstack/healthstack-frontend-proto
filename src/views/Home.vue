@@ -22,20 +22,10 @@
       <div id="navbar" class="navbar-menu">
         <div class="navbar-end">
           <div class="navbar-item">
-            <div class="field is-grouped">
-              <p class="control">
-                <a class="button">
-                  <span class="icon">
-                    <i class="fas fa-users"></i>
-                  </span>
-                  <span>
-                    Log in
-                  </span>
-                </a>
-              </p>
+            <div class="field">
               <p class="control">
                 <a class="button is-link" href="#">
-                  <span>Sign up</span>
+                  <span>Try Healthstack</span>
                 </a>
               </p>
             </div>
@@ -47,10 +37,10 @@
       <div class="hero-body">
         <div class="container">
           <h1 class="title has-text-white">
-            We help you optimize your workflow, improve your customer experience and save
+            Modern Online and Offline Electronic Medical Record System for Africa
           </h1>
           <h2 class="subtitle has-text-white">
-            Medium subtitle
+            Healthstack helps care providers to efficiently manage their workflow, <br>offer good customer experience and reduce cost
           </h2>
         </div>
       </div>
