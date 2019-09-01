@@ -4,7 +4,20 @@
   </div>
 </template>
 
-<script src="@/seed.js"></script>
+<script>
+import dataStore from "@/database/index.js";
+
+export default {
+}
+</script>
+
+<script>
+
+</script>
+
+<style>
+
+</style>
 
 <style lang="scss">
 </style>

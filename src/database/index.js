@@ -2,7 +2,7 @@
 
 import idb from 'idb';
 import { async } from 'q';
-import './seed.js'
+import seedData from './seed.js'
 import { users, examRequests } from './seed.js';
 
 const db = idb.openDB('healthstackDB', 1, {
@@ -203,8 +203,8 @@ export async function deleteUserById(userId) {
  */
 
 async function seedDB() {
-    patients.forEach(await createPatient);
-    examRequests.forEach(await createExamRequest);
-    exams.forEach(await createExam);
-    users.forEach(await createUser);
+    seedData.patients.forEach(await createPatient);
+    seedData.examRequests.forEach(await createExamRequest);
+    seedData.exams.forEach(await createExam);
+    seedData.users.forEach(await createUser);
 }
