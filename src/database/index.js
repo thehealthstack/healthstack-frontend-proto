@@ -1,38 +1,41 @@
 "use strict";
 
-import idb from "idb";
+import {openDB} from "idb";
 import seedData from "./seed.js";
 
-const db = idb.openDB("healthstackDB", 1, {
-  upgrade(db) {
-    const patientStore = db.createObjectStore("Patients", {
-      keypath: "patientId",
-      autoIncrement: true
+let db;
+(async function() {
+    db = await openDB("healthstackDB", 1, {
+        upgrade(db) {
+          const patientStore = db.createObjectStore("Patients", {
+            keypath: "patientId",
+            autoIncrement: true
+          });
+          patientStore.createIndex("email", "email", { unique: true });
+      
+          const examStore = db.createObjectStore("Exams", {
+            keyPath: "examId",
+            autoIncrement: true
+          });
+          examStore.createIndex("examName", "examName", { unique: true });
+      
+          const examRequestStore = db.createObjectStore("ExamRequests", {
+            keyPath: "examRequestId",
+            autoIncrement: true
+          });
+          examRequestStore.createIndex("patientId", "patientId");
+      
+          const userStore = db.createObjectStore("Users", {
+            keyPath: "userId",
+            autoIncrement: true
+          });
+          userStore.createIndex("email", "email", { unique: true });
+          seedDB()
+            .then(() => console.log("Seed successful"))
+            .catch(err => console.error('Error'));
+        }
     });
-    patientStore.createIndex("email", "email", { unique: true });
-
-    const examStore = db.createObjectStore("Exams", {
-      keyPath: "examId",
-      autoIncrement: true
-    });
-    examStore.createIndex("examName", "examName", { unique: true });
-
-    const examRequestStore = db.createObjectStore("ExamRequests", {
-      keyPath: "examRequestId",
-      autoIncrement: true
-    });
-    examRequestStore.createIndex("patientId", "patientId");
-
-    const userStore = db.createObjectStore("Users", {
-      keyPath: "userId",
-      autoIncrement: true
-    });
-    userStore.createIndex("email", "email", { unique: true });
-    seedDB()
-      .then(() => console.log("Seed successful"))
-      .catch(err => console.error(err));
-  }
-});
+})();
 
 /**
  * Patients Functions
@@ -54,7 +57,8 @@ export async function getPatientById(patientId) {
 }
 
 export async function createPatient(patient) {
-  await db.add("Patients", patient);
+	const dbi = await openDB("healthstackDB", 1);
+  await dbi.add("Patients", patient);
 }
 
 export async function editPatientById(patientId, patient) {
