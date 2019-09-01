@@ -24,9 +24,9 @@
         <div class="hero-body">
           <div class="container">
             <h1 class="title has-text-white is-size-2">
-              Modern Electronic Medical Record System for Medical Diagnostic Laboratories in Africa
+              Modern EHR System for Medical Diagnostic Laboratories in Africa
             </h1>
-            <h2 class="subtitle has-text-white">
+            <h2 class="subtitle has-text-white is-5">
               Healthstack helps care providers to efficiently manage their workflow, <br>offer good customer experience and reduce cost
             </h2>
             <a class="is-link button is-large" href="#">Request Demo</a>
