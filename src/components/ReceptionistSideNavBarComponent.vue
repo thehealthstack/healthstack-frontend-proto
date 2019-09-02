@@ -29,3 +29,10 @@ export default {
 }
 </script>
 
+<style scoped>
+  .menu-list a.router-link-active {
+      background-color: #3273dc;
+      color: #fff;
+  }
+</style>
+

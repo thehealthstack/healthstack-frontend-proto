@@ -50,7 +50,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="exam in exams">
+                  <tr v-for="(exam, key) in exams" :key=key>
                     <td>{{ exam.examName }}</td>
                     <td>{{ exam.price }}</td>
                   </tr>
@@ -79,15 +79,15 @@
 </template>
 
 <script>
+import { getPatientExams, getPatientById } from "@/database/index.js";
 export default {
     name: "ExamCheckoutComponent",
     props: ["isActive", "currentPatient"],
     data() {
         return {
             active: this.isActive,
-            currentPatientId: this.currentPatient,
-            examIds: [1,2],
-            exams1: {}
+            currentPatientId: 1,
+            examIds: [1,2]
         }
     },
     methods: {
@@ -96,21 +96,23 @@ export default {
                 this.$emit('isActiveUpdated', false);
                 this.active = false;
             }
+        },
+        async getExams() {
+          return getPatientExams(this.currentPatientId);
         }
 
     },
     computed: {
-        patient: function() {return window.Seed.fetchPatient(this.currentPatientId);},
+        patient: async function() {return await getPatientById},
         examRequest: function() {return window.Seed.fetchPatientExamRequest(1);},
-        exams: function() {
-            let exams = window.Seed.fetchPatientExamRequest(this.currentPatientId).exams;
-            return exams.map(exam => window.Seed.fetchExam(exam.examId));
+        exams: async function() {
+            return await this.getExams();
         },
-        total: function() {
-            let exams = window.Seed.fetchPatientExamRequest(this.currentPatientId).exams;
-            return exams.reduce((accumulator, exam) => {
-                return accumulator + parseInt(window.Seed.fetchExam(exam.examId).price)
-            }, 0);
+        total: async function() {
+            let exams = await this.getExams;
+            /*return exams.reduce((accumulator, exam) => {
+                return accumulator + parseInt(exam.examId).price
+            }, 0);*/
         }
     },
     watch: {

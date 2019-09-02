@@ -62,6 +62,7 @@
 </template>
 
 <script>
+import { createPatient } from "@/database/index.js";
 export default {
     name: "CreatePatientComponent",
     props: ["isActive"],
@@ -89,7 +90,7 @@ export default {
         addFields(field){
             field++;
         },
-        processForm: function() {
+        processForm: async function() {
             let patient = {
                 firstName: this.firstName,
                 lastName: this.lastName,
@@ -98,7 +99,7 @@ export default {
                 telephone: '+237' + this.telephone,
                 email: this.email,
             }
-            window.Seed.addPatient(patient);
+            await createPatient(patient);
             this.active = false;
           }
     },

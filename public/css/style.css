@@ -19,11 +19,6 @@ footer {
     }
 }
 
-.menu-list a.router-link-active {
-    background-color: #3273dc;
-    color: #fff;
-}
-
 html, body {
    height: 100%;
 }

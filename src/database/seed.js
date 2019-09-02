@@ -90,6 +90,40 @@ const examRequests = [
       }
     ],
     status: "specimen collected"
+  },
+  {
+    patientId: 3,
+    doctor: {
+      name: "ndum oliver",
+      email: "oliverndum@gmail.com",
+      telephone: "+23770244738"
+    },
+    exams: [
+      {
+        examId: 1,
+        status: "requested"
+      },
+      {
+        examId: 2,
+        status: "requested"
+      }
+    ],
+    status: "requested"
+  },
+  {
+    patientId: 4,
+    doctor: {
+      name: "ndum oliver",
+      email: "oliverndum@gmail.com",
+      telephone: "+23770244738"
+    },
+    exams: [
+      {
+        examId: 1,
+        status: "requested"
+      }
+    ],
+    status: "requested"
   }
 ];
 
@@ -168,6 +202,22 @@ const patients = [
     age: "24",
     telephone: "+254798962559",
     email: "brandon.odiwuor@gmail.com"
+  },
+  {
+    firstName: "john",
+    lastName: "doe",
+    sex: "m",
+    age: "26",
+    telephone: "234798962559",
+    email: "jdoe@gmail.com"
+  },
+  {
+    firstName: "jane",
+    lastName: "doe",
+    sex: "f",
+    age: "21",
+    telephone: "244798962559",
+    email: "janedoe@gmail.com"
   }
 ];
 export default {

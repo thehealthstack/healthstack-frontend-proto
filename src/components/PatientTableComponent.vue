@@ -13,7 +13,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="patient in patients">
+        <tr v-for="(patient, key) in patients" :key=key>
           <td>{{ patient.firstName }}</td>
           <td>{{ patient.lastName }}</td>
           <td>{{ patient.email }}</td>
@@ -36,15 +36,19 @@
 
 <script>
 import testOrderingComponent from "@/components/TestOrderingComponent.vue";
+import { getAllPatients } from "@/database/index.js"
 
 export default {
     name: "PatientTableComponent",
     data: function() {
         return {
-            "patients": window.Seed.patients,
+            "patients": [],
             isActive: false,
             patientId: -1
         }
+    },
+    async created() {
+      this.patients = await getAllPatients();
     },
     methods: {
         activateModal(patientId){

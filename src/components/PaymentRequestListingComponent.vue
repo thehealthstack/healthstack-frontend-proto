@@ -13,7 +13,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="patient in patients">
+        <tr v-for="(patient, key) in patients" :key=key>
           <td>{{ patient.firstName }}</td>
           <td>{{ patient.lastName }}</td>
           <td>{{ patient.email }}</td>
@@ -21,7 +21,7 @@
           <td>{{ patient.sex }}</td>
           <td>{{ patient.age }}</td>
           <td>
-            <a class="button is-link is-expandible" @click="activateModal(patient.patientId)">
+            <a class="button is-link is-expandible" @click="activateModal(4)">
               <span class="icon">
                 <i class="fas fa-shopping-cart"></i>
               </span>
@@ -41,15 +41,19 @@
 
 <script>
 import examCheckoutComponent from "@/components/ExamCheckoutComponent.vue";
+import { getExamRequestPatients } from "@/database/index.js";
 
 export default {
   name: "PaymentRequestListingComponent",
   data: function() {
     return {
-      examRequests: window.Seed.examRequests1,
+      "patients": [],
       isActive: false,
-      currentPatient: 1
+      currentPatient: 2
     };
+  },
+  async created() {
+    this.patients = await getExamRequestPatients();
   },
   methods: {
     activateModal(patientId) {
@@ -58,16 +62,6 @@ export default {
     },
     updateIsActive(value) {
       this.isActive = value;
-    },
-    getPatientsWithExamRequests: function() {
-      return this.examRequests.map(examRequest =>
-        window.Seed.fetchPatient(examRequest.patientId)
-      );
-    }
-  },
-  computed: {
-    patients: function() {
-      return this.getPatientsWithExamRequests();
     }
   },
   components: {
