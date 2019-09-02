@@ -4,10 +4,9 @@
         <div class="columns">
             <sidenavbar-component></sidenavbar-component>
             <div class="column">
-                <div class="level">
+                <div class="level" style="margin-top: 4%">
                     <examsearch-component></examsearch-component>
-                    <createnewexam-component></createnewexam-component>
-                    <createnewvaccin-component></createnewvaccin-component>
+                    <createnewexamvaccin-component></createnewexamvaccin-component>
                 </div>
                 <examlistingtable-component></examlistingtable-component>
             </div>
@@ -18,8 +17,7 @@
 <script>
 
 import examSearchComponent from "@/components/ExamSearchComponent.vue";
-import createNewExamComponent from "@/components/CreateNewExamComponent.vue";
-import createNewVaccinComponent from "@/components/CreateNewVaccinComponent.vue";
+import createNewExamVaccinComponent from "@/components/CreateNewExamVaccinComponent.vue";
 import examListingRowComponent from "@/components/ExamListingRowComponent.vue";
 import sideNavBarComponent from "@/components/SideNavBarComponent.vue";
 import searchBarComponent from "@/components/SearchBarComponent.vue";
@@ -30,8 +28,7 @@ export default {
     name: "ExamListingView",
     components: {
         "examsearch-component": examSearchComponent,
-        "createnewexam-component": createNewExamComponent,
-        "createnewvaccin-component": createNewVaccinComponent,
+        "createnewexamvaccin-component": createNewExamVaccinComponent,
         "examlistingrow-component": examListingRowComponent,
         "sidenavbar-component": sideNavBarComponent,
         "searchbar-component": searchBarComponent,
