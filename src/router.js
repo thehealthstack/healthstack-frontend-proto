@@ -2,7 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home.vue";
 import ExamRequestListingView from "./views/ExamRequestListingView.vue";
-import examListingView from "./views/ExamListingView.vue";
+import ExamListingView from "./views/ExamListingView.vue";
 import CashierView from "./views/CashierView.vue";
 import ReceptionistView from "./views/ReceptionistView.vue";
 import PatientRegistrationComponent from "@/components/PatientRegistrationComponent.vue";
@@ -26,11 +26,11 @@ export default new Router({
     },
     {
       path: "/:laboratoryname/labtech/:username",
-      component: ExamRequestListingView
+      component: ExamRequestListingView,
     },
     {
       path: "/:laboratoryname/labtech/:username/exams",
-      component: examListingView
+      component: ExamListingView
     },
     { path: "/:laboratoryname/cashier/:username", component: CashierView },
     {
