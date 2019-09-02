@@ -15,8 +15,8 @@
                 </div>
             </section>
             <footer class="modal-card-foot">
-                <button class="button is-success">Validate</button>
-                <button class="button" @click="emitCloseModalEvent">Cancel</button>
+                <button class="button is-success" @click="validate">Validate</button>
+                <button class="button" @click="invalidate">Invalidate</button>
             </footer>
         </div>
     </div>
@@ -25,12 +25,32 @@
 <script>
 import patientInfoComponent from "@/components/PatientInfoComponent.vue";
 import examResultComponent from "@/components/ExamResultComponent.vue";
+import { editExamRequestById } from "@/database/index.js";
 
 export default {
     name: "ResultVerificationComponent",
     props: ["examRequest", "isActive"],
     methods: {
         emitCloseModalEvent(){
+            this.$emit("close");
+        },
+        async validate(){
+            this.examRequest.status = "verified";
+            try{
+                let examRequest = await editExamRequestById(this.examRequest);
+            } catch(err){
+                console.error(err);
+            }
+            
+            this.$emit("close");
+        },
+        async invalidate(){
+            this.examRequest.status = "invalid";
+            try{
+                let examRequest = await editExamRequestById(this.examRequest);
+            } catch(err){
+                console.error(err);
+            }
             this.$emit("close");
         }
     },
