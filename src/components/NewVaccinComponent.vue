@@ -3,7 +3,7 @@
         <div class="modal-background"></div>
         <div class="modal-card">
             <header class="modal-card-head">
-            <p class="modal-card-title">Create New Vaccin</p>
+            <p class="modal-card-title">Create / Update Vaccin</p>
             <button class="delete" aria-label="close" @click="closeModal"></button>
             </header>
             <section class="modal-card-body">
@@ -17,7 +17,7 @@
                         <input class="input is-link" type="text" v-model="fields.price" placeholder="Price">
                     </div>
                 </div>
-                <div class="field" v-for="(alias, key) in fields.aliases" :key="key">
+                <div class="field" v-for="(alias, key) in fields.aliases" :key="'a' + key">
                     <div class="control">
                         <div class="level">
                             <input class="input is-link" type="text" v-model="alias.value" placeholder="Aliases">
@@ -27,7 +27,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="field" v-for="(discount, key) in fields.discounts" :key="key">
+                <div class="field" v-for="(discount, key) in fields.discounts" :key="'d' + key">
                     <div class="level">
                         <div class="control">
                             <input class="input is-link" type="text" v-model="discount.name" placeholder="Discount name">
@@ -43,6 +43,7 @@
             </section>
             <footer class="modal-card-foot">
                 <button class="button is-link" @click="createNewVaccin">Create Vaccin</button>
+                <button class="button is-link" @click="updateVaccin">Update Vaccin</button>
             </footer>
         </div>
     </div> 
@@ -65,27 +66,26 @@ export default {
     methods: {
         createNewVaccin(){
             let numOfVaccins = Seed.vaccins.length;
-            let containsVaccin = false;
+            Seed.vaccins.push({
+                    vaccinId: ++numOfVaccins,
+                    vaccinName: this.fields.Name,
+                    price: this.fields.price,
+                    aliases: this.fields.aliases,
+                    discounts: this.fields.discounts,
+            });
+            
+            this.$emit("close");
+        },
+        updateVaccin(){
             Seed.vaccins.map( vaccin => {
                 if(vaccin.vaccinId == this.fields.vaccinId){
                     vaccin.vaccinName = this.fields.vaccinName;
                     vaccin.price = this.fields.price;
                     vaccin.aliases = this.fields.aliases;
                     vaccin.discounts = this.fields.discounts
-                    containsVaccin = true;
                 }
-            })
+            });
 
-            if(!containsVaccin){
-                Seed.vaccins.push({
-                    vaccinId: ++numOfVaccins,
-                    vaccinName: this.fields.Name,
-                    price: this.fields.price,
-                    aliases: this.fields.aliases,
-                    discounts: this.fields.discounts,
-                });
-            }
-            
             this.$emit("close");
         },
         populateVaccinModal(examData){
