@@ -24,12 +24,13 @@
         <div class="hero-body">
           <div class="container">
             <h1 class="title has-text-white is-size-2">
-              Modern EHR System for Medical Diagnostic Laboratories in Africa
+              Modern EHR Software For Medical Diagnostic Laboratories In Africa
             </h1>
             <h2 class="subtitle has-text-white is-5">
-              Healthstack helps care providers to efficiently manage their workflow, <br>offer good customer experience and reduce cost
+              HealthStack helps care providers to efficiently manage their workflow, <br>offer good customer experience and reduce cost
             </h2>
-            <a class="is-link button is-large" href="#">Request Demo</a>
+            <a class="is-link button is-large" href="#" @click="callModal">Request Demo</a>
+            <requestdemo-component :isActive="isActive" @close="closeModal"></requestdemo-component>
           </div>
         </div>
       </section>
@@ -63,7 +64,7 @@
             <article class="tile is-child box">
               <h1 class="title">Medical Result Notification & Delivery</h1>
               <p class="subtitle">
-                Healthstack enable you to notify patients through sms when their results are ready & deliver results to them via email
+                Healthstack enables you to notify patients through sms when their results are ready & deliver results to them via email
               </p>
             </article>
           </div>
@@ -82,8 +83,25 @@
 </template>
 
 <script>
+import requestDemoComponent from "@/components/RequestDemoComponent.vue";
 
 export default {
   name: "home",
+  data(){
+    return {
+      isActive: false,
+    }
+  },
+  methods: {
+    callModal(){
+      this.isActive = true;
+    },
+    closeModal(){
+      this.isActive = false;
+    }
+  },
+  components: {
+    "requestdemo-component": requestDemoComponent,
+  }
 };
 </script>
