@@ -108,9 +108,9 @@ export async function createExam(exam) {
   }
 }
 
-export async function editExamById(examId, exam) {
+export async function editExamById(exam) {
   try {
-    return (await dbPromise).put("Exams", exam, examId);
+    return (await dbPromise).put("Exams", exam);
   } catch (err) {
     console.error(err);
   }
@@ -190,9 +190,9 @@ export async function createExamRequest(examRequest) {
   }
 }
 
-export async function editExamRequestById(examRequestId, examRequest) {
+export async function editExamRequestById(examRequest) {
   try {
-    return (await dbPromise).put("ExamRequests", examRequest, examRequestId);
+    return (await dbPromise).put("ExamRequests", examRequest);
   } catch (err) {
     console.error(err);
   }
