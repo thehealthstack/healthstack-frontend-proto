@@ -15,8 +15,9 @@
         </div>
       </section>
       <footer class="modal-card-foot">
-        <button class="button is-success">Save changes</button>
-        <button class="button is-info">Cancel</button>
+        <button class="button is-success" @click="registerResults">Save changes</button>
+        <button class="button is-success" @click="completeRegistration">Done</button>
+        <button class="button is-info" @click="emitCloseRegistrationModalEvent">Cancel</button>
       </footer>
     </div>
   </div>
@@ -24,13 +25,31 @@
 
 <script>
 import patientInfoComponent from "@/components/PatientInfoComponent.vue";
-import examResultRegistrationComponent from "@/components/ResultRegistrationComponent.vue";
+import examResultRegistrationComponent from "@/components/ExamResultRegistrationComponent.vue";
+import { editExamRequestById } from "@/database/index.js";
 
 export default {
     name: "ResultRegistrationComponent",
     methods: {
         emitCloseRegistrationModalEvent(){
             this.$emit("closeregistration");
+        },
+        async registerResults(){
+          try{
+            let examRequest = await editExamRequestById(this.examRequest);
+          }catch(err){
+            console.error(err);
+          }
+          this.$emit("closeregistration");
+        },
+        async completeRegistration(){
+          this.examRequest.status = "Result Registered";
+          try{
+            let examRequest = await editExamRequestById(this.examRequest);
+          }catch(err){
+            console.error(err);
+          }
+          this.$emit("closeregistration");
         }
     },
     components: {

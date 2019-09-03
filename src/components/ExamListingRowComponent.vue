@@ -24,6 +24,7 @@
 <script>
 import newExamComponent from "@/components/NewExamComponent.vue";
 import newVaccinComponent from "@/components/NewVaccinComponent.vue";
+import { getExamById } from "@/database/index.js";
 
 export default {
   name: "ExamListingRowComponent",
@@ -48,9 +49,9 @@ export default {
     };
   },
   methods: {
-    modifyExam(examId) {
-      let exam = Seed.exams.filter(exam => exam.examId == examId).shift();
-
+    async modifyExam(examId) {
+      let exam = await getExamById(examId);
+      
       if (!exam.parameters) {
         this.$refs.newVaccinComponent.populateVaccinModal(exam);
         this.isVaccinModalActive = true;

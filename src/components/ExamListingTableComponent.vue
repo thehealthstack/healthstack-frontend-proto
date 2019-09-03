@@ -14,12 +14,16 @@
 
 <script>
 import examListingRowComponent from "@/components/ExamListingRowComponent.vue";
+import { getAllExams } from "@/database/index.js";
 export default {
     name: "ExamListingTableComponent",
     data(){
         return {
-            exams: Seed.exams
+            exams: [],
         }
+    },
+    async created(){
+        this.exams = await getAllExams();
     },
     components: {
         "examlistingrow-component": examListingRowComponent,

@@ -32,8 +32,7 @@ export default {
         availExamRequests.map(async request => {
             let examRequest = await await getCompleteExamReqeuestById(request.examRequestId);
             examRequests.push(examRequest);
-        })
-        console.log(examRequests);
+        });
         this.examRequests = examRequests;
     },
     components: {
