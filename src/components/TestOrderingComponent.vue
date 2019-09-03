@@ -164,7 +164,8 @@ export default {
                       email: this.doctorEmail,
                       telephone: this.doctorTelephone
                   },
-                  exams: exams
+                  exams: exams,
+                  status: "requested"
                 });
                 this.closeModal();
                 this.currentPatientId = -1;
