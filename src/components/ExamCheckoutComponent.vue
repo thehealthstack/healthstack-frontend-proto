@@ -1,7 +1,7 @@
 <template>
   <div class="modal" :class="{'is-active': active}">
     <div class="modal-background"></div>
-    <div class="modal-card">
+    <div class="modal-card" v-if="patient">
       <header class="modal-card-head">
         <p class="modal-card-title">Payment Confirmation</p>
         <button class="delete" aria-label="close" @click="closeModal"></button>
@@ -36,9 +36,9 @@
             </div>
           </div>
         </div>
-        <div class="card" style="margin-top: 15px;">
+        <div class="card" style="margin-top: 15px;" v-if="examsNotEmpty()">
           <header class="card-header">
-            <p class="card-header-title">Patient Details:</p>
+            <p class="card-header-title">Exam(s) Details:</p>
           </header>
           <div class="card-content">
             <div class="content">
@@ -79,44 +79,52 @@
 </template>
 
 <script>
-import { getPatientExams, getPatientById } from "@/database/index.js";
+import { getPatientExams, getPatientById, confirmPayment } from "@/database/index.js";
 export default {
     name: "ExamCheckoutComponent",
     props: ["isActive", "currentPatient"],
     data() {
         return {
             active: this.isActive,
-            currentPatientId: 1,
-            examIds: [1,2]
+            currentPatientId: -1,
+            patient: {},
+            exams: []
         }
     },
     methods: {
-        closeModal(){
+        async closeModal(){
+          await confirmPayment(this.currentPatient);
             if(this.active) { 
                 this.$emit('isActiveUpdated', false);
                 this.active = false;
             }
+
         },
         async getExams() {
           return getPatientExams(this.currentPatientId);
+        },
+        examsNotEmpty() {
+          return true;
         }
 
     },
     computed: {
-        patient: async function() {return await getPatientById},
         examRequest: function() {return window.Seed.fetchPatientExamRequest(1);},
-        exams: async function() {
-            return await this.getExams();
-        },
-        total: async function() {
-            let exams = await this.getExams;
-            /*return exams.reduce((accumulator, exam) => {
-                return accumulator + parseInt(exam.examId).price
-            }, 0);*/
+        total: function() {
+            if(this.exams.length === 0) {
+            return 0;
+          } else {
+            let reducer = (accumulator, exam) => {return parseInt(exam.price) + accumulator};
+            return this.exams.reduce(reducer, 0);
+          }
         }
     },
     watch: {
-        isActive(value) {
+        async isActive(value) {
+          if(value) {
+              this.patient = await getPatientById(parseInt(this.currentPatient));
+              this.exams = await getPatientExams(parseInt(this.currentPatient));
+            }
             this.active = value;
         },
         currentPatient(value) {

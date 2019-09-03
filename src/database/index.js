@@ -9,7 +9,7 @@ const dbVersion = 1;
 const dbPromise = openDB(dbName, dbVersion, {
   upgrade(db) {
     const patientStore = db.createObjectStore("Patients", {
-      keypath: "patientId",
+      keyPath: "patientId",
       autoIncrement: true
     });
     patientStore.createIndex("email", "email", { unique: true });
@@ -25,6 +25,7 @@ const dbPromise = openDB(dbName, dbVersion, {
       autoIncrement: true
     });
     examRequestStore.createIndex("patientId", "patientId");
+    examRequestStore.createIndex("status", "status");
 
     const userStore = db.createObjectStore("Users", {
       keyPath: "userId",
@@ -116,6 +117,20 @@ export async function editExamById(exam) {
   }
 }
 
+export async function confirmPayment(patientId) {
+  try {
+    let examRequest = await (await dbPromise).getFromIndex(
+      "ExamRequests",
+      "patientId",
+      patientId
+    );
+    examRequest.status = "paid";
+    return (await dbPromise).put("ExamRequests", examRequest);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 export async function deleteExamById(examId) {
   try {
     return (await dbPromise).delete("Exams", examId);
@@ -179,6 +194,62 @@ export async function getCompleteExamReqeuestById(examRequestId) {
     return examRequest;
   } catch (err) {
     console.error(err);
+  }
+}
+
+export async function getExamRequestPatients() {
+  try {
+    let examRequests = await (await dbPromise).getAllFromIndex(
+      "ExamRequests",
+      "status",
+      "requested"
+    );
+    return await Promise.all(
+      (await examRequests).map(
+        async examRequest => await await getPatientById(examRequest.patientId)
+      )
+    );
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function getPatientExams(patientId) {
+  try {
+    let examRequest = await (await dbPromise).getFromIndex(
+      "ExamRequests",
+      "patientId",
+      patientId
+    );
+    return await Promise.all(
+      (await examRequest.exams).map(
+        async exam => await await getExamById(exam.examId)
+      )
+    );
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function getExamOrderTotal(examIdsArray) {
+  try {
+    return await Promise.all(
+      examIdsArray.reduce(async (accumulator, examId) => {
+        return (await await getExamById(examId)).price + accumulator;
+      }, 0)
+    );
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function getOrderedExams(examIdsArray) {
+  try {
+    return await Promise.all(
+      examIdsArray.map(async examId => await await getExamById(examId))
+    );
+  } catch (e) {
+    console.error(e);
   }
 }
 

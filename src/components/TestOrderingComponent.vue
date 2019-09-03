@@ -118,7 +118,7 @@
             </div>
           </div>
           <div style="margin-top: 15px;">
-            <button class="button is-link is-fullwidth is-large" @click="submitOrder">Submit</button>
+            <button class="button is-link is-fullwidth is-large" @click="submitOrder" :disabled=isFormReady>Submit</button>
           </div>
         </div>
       </section>
@@ -127,17 +127,17 @@
 </template>
 
 <script>
-import { getAllExams, getExamById, getOrderedExams } from "@/database/index.js";
+import { getAllExams, getExamById, getOrderedExams, getExamOrderTotal, createExamRequest } from "@/database/index.js";
 export default {
     name: "TestOrderingComponent",
     props: ["isActive", "patientId"],
     data() {
         return {
             active: this.isActive,
-            doctorFullName: '',
-            doctorEmail: '',
-            doctorTelephone: '',
-            testsOrdered: [1, 2],
+            doctorFullName: null,
+            doctorEmail: null,
+            doctorTelephone: null,
+            testsOrdered: [],
             examId: '',
             currentPatientId: this.patientId,
             exams: [],
@@ -146,7 +146,6 @@ export default {
     },
     async created() {
       this.exams = await getAllExams();
-      this.orderedExams = await getOrderedExams(this.testsOrdered);
     },
     methods: {
         closeModal(){
@@ -155,44 +154,51 @@ export default {
                 this.active = false;
             }
         },
-        submitOrder() {
+        async submitOrder() {
+          let exams = this.testsOrdered.map(examId => {return {examId: examId, status: "requested"}})
             if(this.validateOrder()) {
-                window.Seed.addExamRequest(
-                    this.currentPatientId,
-                    {
-                        name: this.doctorFullName,
-                        email: this.doctorEmail,
-                        telephone: this.doctorTelephone
-                    },
-                    this.testsOrdered
-                );
+                await createExamRequest({
+                  patientId: this.currentPatientId,
+                  doctor: {
+                      name: this.doctorFullName,
+                      email: this.doctorEmail,
+                      telephone: this.doctorTelephone
+                  },
+                  exams: exams
+                });
                 this.closeModal();
+                this.currentPatientId = -1;
             }
         },
         validateOrder() {
-            return true;
+            return (this.doctorFullName && this.doctorEmail && this.doctorTelephone && this.isTestOrdered && this.currentPatientId != -1);
         },
-        addExam() {
-            this.testsOrdered.push(this.examId)
+        async addExam() {
+            this.testsOrdered.push(this.examId);
+            this.orderedExams = await getOrderedExams(this.testsOrdered);
         },
-        removeExam(examId) {
+        async removeExam(examId) {
             let index = this.testsOrdered.indexOf(examId);
             if(index != -1) {
                 this.testsOrdered.splice(index, 1)
             }
+            this.orderedExams = await getOrderedExams(this.testsOrdered);
         }
     },
     computed: {
         isTestOrdered: function() {
             return this.testsOrdered.length >= 1;
         },
-        /*orderedExams: async function() {
-            return await getOrderedExams(this.testsOrdered);
-        },*/
         total: function() {
-            return this.testsOrdered.reduce(async (accumulator, currentExamId) => {
-                return accumulator + parseInt((await getExamById(currentExamId)).price);
-            }, 0)
+          if(this.orderedExams.length === 0) {
+            return 0;
+          } else {
+            let reducer = (accumulator, exam) => {return parseInt(exam.price) + accumulator};
+            return this.orderedExams.reduce(reducer, 0);
+          }
+        },
+        isFormReady: function() {
+          return !this.validateOrder();
         }
     },
     watch: {

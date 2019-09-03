@@ -21,7 +21,7 @@
           <td>{{ patient.sex }}</td>
           <td>{{ patient.age }}</td>
           <td>
-            <a class="button is-link is-expandible" @click="activateModal(4)">
+            <a class="button is-link is-expandible" @click="activateModal(patient.patientId)">
               <span class="icon">
                 <i class="fas fa-shopping-cart"></i>
               </span>
@@ -49,7 +49,7 @@ export default {
     return {
       "patients": [],
       isActive: false,
-      currentPatient: 2
+      currentPatient: -1
     };
   },
   async created() {
