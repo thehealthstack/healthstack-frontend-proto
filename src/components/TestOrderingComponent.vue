@@ -127,7 +127,7 @@
 </template>
 
 <script>
-import { getAllExams, getExamById } from "@/database/index.js";
+import { getAllExams, getExamById, getOrderedExams } from "@/database/index.js";
 export default {
     name: "TestOrderingComponent",
     props: ["isActive", "patientId"],
@@ -137,14 +137,16 @@ export default {
             doctorFullName: '',
             doctorEmail: '',
             doctorTelephone: '',
-            testsOrdered: [],
+            testsOrdered: [1, 2],
             examId: '',
             currentPatientId: this.patientId,
-            exams: []
+            exams: [],
+            orderedExams: []
         }
     },
     async created() {
       this.exams = await getAllExams();
+      this.orderedExams = await getOrderedExams(this.testsOrdered);
     },
     methods: {
         closeModal(){
@@ -178,28 +180,15 @@ export default {
             if(index != -1) {
                 this.testsOrdered.splice(index, 1)
             }
-        },
-        async fetchExams() {
-            let exams = [];
-            for(let testId in this.testsOrdered) {
-                let exam = await getExamById(testId);
-                exams.push(exam);
-            }
-            return exams;
         }
     },
     computed: {
         isTestOrdered: function() {
             return this.testsOrdered.length >= 1;
         },
-        orderedExams: async function() {
-            let exams = [];
-            for(let testId in this.testsOrdered) {
-                let exam = await getExamById(testId);
-                exams.push(exam);
-            }
-            return await exams;
-        },
+        /*orderedExams: async function() {
+            return await getOrderedExams(this.testsOrdered);
+        },*/
         total: function() {
             return this.testsOrdered.reduce(async (accumulator, currentExamId) => {
                 return accumulator + parseInt((await getExamById(currentExamId)).price);
