@@ -9,7 +9,7 @@
     <td>{{ examRequest.doctor.name }}</td>
     <td>{{ examRequest.status }}</td>
     <td>
-      <a class="button is-link is-rounded">Render Result</a>
+      <a class="button is-link is-rounded" href="./../../../data/medicalresults.pdf">Render Result</a>
     </td>
   </tr>
 </template>
